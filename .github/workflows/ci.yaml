@@ -32,4 +32,4 @@ jobs:
           with:
             token: ${{ secrets.GITHUB_TOKEN }}
             version: latest
-            args: --check ./src
+            args: --check .
