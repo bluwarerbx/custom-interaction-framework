@@ -1,1 +1,2 @@
-print("Hello world, from client!")
+local x = 'x'
+print(x)
