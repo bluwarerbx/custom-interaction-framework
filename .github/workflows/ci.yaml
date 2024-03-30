@@ -1,85 +1,35 @@
 name: CI
 
-on: 
-    push:
-        branches:
-            - main
-    pulL_request:
-                branches:
-                    - main
+on:
+  push:
+    branches:
+    - dev
+jobs:
 
-
-jobs: 
-
-  deploy:
-    if: ${{ github.ref == 'refs/heads/main' }}
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
-
-
     steps:
-      - name: Checkout Main
-        uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Setup Aftman
-        uses: ok-nick/setup-aftman@v0.3.0
-        with:
+    - uses: ok-nick/setup-aftman@v0.3.0
+      name: Install aftman
+      with:
           token: ${{ SECRETS.GITHUB_TOKEN }}
 
-      - name: Install Aftman
-        run: aftman install
+    - name: Lint
+      run: |
+        selene ./src
 
-      - name: Install Dependencies
-        run: wally install
-
-      - name: Run Selene
-        run : selene lib
-
-      - name: Get Release from wally.toml
-        uses: SebRollen/toml-action@v1.0.0
-        id: read_toml
-        with: 
-          file: 'wally.toml'
-          field: 'package.version'
-
-
-      - name: Publish to Wally
-        env: 
-          WALLY_TOKEN: ${{ secrets.WALLY_AUTH_TOKEN }}
-        run: |
-          mkdir =p ~/.wally
-          printf "[tokens]\n\"https://api.wally.run/\" = \"%s\"" "$WALLY_TOKEN" >> ~/.wally/auth.toml
-          wally publish
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with: 
-          name: ${{ steps.read_toml.outputs.value }}
-          tag_name: ${{ steps.read_toml.outputs.value }}
-          files: pack.rbxm
-          generate_release_notes: true
-          draft: true
-
-  development: 
-    if: ${{ github.ref == 'refs/heads/dev' }}
+  style:
+    name: Styling
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout development
-        uses: actions/checkout@v3
-
-      - name: Setup Aftman
-        uses: ok-nick/setup-aftman@v0.3.0
-        with: 
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install Aftman
-        run: aftman install
-
-      - name: Run Selene
-        run : selene lib
-
-      - name: Install Dependencies
-        run: wally install
-
-      - name: Build Custom Interaction Framework
-        run: rojo build -o "Custom Interaction Framework.rbxlx"
+    - uses: actions/checkout@v3
+    - name: StyLua
+      uses: JohnnyMorganz/stylua-action@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        version: latest
+        args: --check ./src
