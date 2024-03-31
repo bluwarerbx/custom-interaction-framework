@@ -5,3 +5,7 @@
 /*.rbxlx.lock
 /*.rbxl.lock
 /*.rbxl
+/node_modules
+/build
+node_modules
+build
