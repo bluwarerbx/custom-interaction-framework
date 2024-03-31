@@ -1,5 +1,4 @@
 --[[
-TODO(Prompt_TypeCheck)
 PromptText: string
 PromptKeybind: Enum.KeyCode
 PromptDuration: number
