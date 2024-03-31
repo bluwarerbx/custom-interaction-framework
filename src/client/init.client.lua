@@ -1,2 +1,2 @@
 local ProximityPromptManager = require(script.ProximityPromptManager)
-ProximityPromptManager.LoadPrompts()
+ProximityPromptManager:LoadPrompts()
