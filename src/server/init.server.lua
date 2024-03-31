@@ -1,1 +1,2 @@
-print("Hello world, from server!")
+local PromptWrapper = require(script.PromptWrapper)
+PromptWrapper:Start()

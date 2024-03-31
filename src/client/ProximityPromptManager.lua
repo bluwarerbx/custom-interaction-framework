@@ -47,22 +47,23 @@ local function PromptWrapper(callback): ()
 		:catch(warn)
 end
 
-local function WrapPrompt(prompt: string, promptCallback: any, manager: any)
+local function WrapPrompt(prompt: string, promptCallback: any)
 	assert(prompt, "Prompt cannot be created as it does not exist")
 	local TaggedPrompts = CollectionService:GetTagged(prompt)
 	for _, taggedObjects in pairs(TaggedPrompts) do
-		promptCallback(taggedObjects, manager)
+		promptCallback(taggedObjects)
 	end
 
 	CollectionService:GetInstanceAddedSignal(prompt):Connect(function(addedObject: BasePart)
-		promptCallback(addedObject, manager)
+		promptCallback(addedObject)
 	end)
 end
 
 function ProximityPromptManager:LoadPrompts()
 	for promptName, promptModule in pairs(PromptsStorage:GetDescendants()) do
 		if promptModule:IsA("ModuleScript") then
-			WrapPrompt(promptName, (require)(promptModule), ProximityPromptManager)
+			print(promptName)
+			WrapPrompt(promptModule.Name, (require)(promptModule))
 		end
 	end
 end
