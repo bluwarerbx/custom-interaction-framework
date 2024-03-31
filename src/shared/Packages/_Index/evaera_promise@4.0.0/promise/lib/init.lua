@@ -308,44 +308,6 @@ function Promise._new(traceback, callback, parent)
 	return self
 end
 
---[=[
-	Construct a new Promise that will be resolved or rejected with the given callbacks.
-
-	If you `resolve` with a Promise, it will be chained onto.
-
-	You can safely yield within the executor function and it will not block the creating thread.
-
-	```lua
-	local myFunction()
-		return Promise.new(function(resolve, reject, onCancel)
-			wait(1)
-			resolve("Hello world!")
-		end)
-	end
-
-	myFunction():andThen(print)
-	```
-
-	You do not need to use `pcall` within a Promise. Errors that occur during execution will be caught and turned into a rejection automatically. If `error()` is called with a table, that table will be the rejection value. Otherwise, string errors will be converted into `Promise.Error(Promise.Error.Kind.ExecutionError)` objects for tracking debug information.
-
-	You may register an optional cancellation hook by using the `onCancel` argument:
-
-	* This should be used to abort any ongoing operations leading up to the promise being settled.
-	* Call the `onCancel` function with a function callback as its only argument to set a hook which will in turn be called when/if the promise is cancelled.
-	* `onCancel` returns `true` if the Promise was already cancelled when you called `onCancel`.
-	* Calling `onCancel` with no argument will not override a previously set cancellation hook, but it will still return `true` if the Promise is currently cancelled.
-	* You can set the cancellation hook at any time before resolving.
-	* When a promise is cancelled, calls to `resolve` or `reject` will be ignored, regardless of if you set a cancellation hook or not.
-
-	:::caution
-	If the Promise is cancelled, the `executor` thread is closed with `coroutine.close` after the cancellation hook is called.
-
-	You must perform any cleanup code in the cancellation hook: any time your executor yields, it **may never resume**.
-	:::
-
-	@param executor (resolve: (...: any) -> (), reject: (...: any) -> (), onCancel: (abortHandler?: () -> ()) -> boolean) -> ()
-	@return Promise
-]=]
 function Promise.new(executor)
 	return Promise._new(debug.traceback(nil, 2), executor)
 end
@@ -354,24 +316,6 @@ function Promise:__tostring()
 	return string.format("Promise(%s)", self._status)
 end
 
---[=[
-	The same as [Promise.new](/api/Promise#new), except execution begins after the next `Heartbeat` event.
-
-	This is a spiritual replacement for `spawn`, but it does not suffer from the same [issues](https://eryn.io/gist/3db84579866c099cdd5bb2ff37947cec) as `spawn`.
-
-	```lua
-	local function waitForChild(instance, childName, timeout)
-	  return Promise.defer(function(resolve, reject)
-		local child = instance:WaitForChild(childName, timeout)
-
-		;(child and resolve or reject)(child)
-	  end)
-	end
-	```
-
-	@param executor (resolve: (...: any) -> (), reject: (...: any) -> (), onCancel: (abortHandler?: () -> ()) -> boolean) -> ()
-	@return Promise
-]=]
 function Promise.defer(executor)
 	local traceback = debug.traceback(nil, 2)
 	local promise
@@ -393,28 +337,6 @@ end
 -- Backwards compatibility
 Promise.async = Promise.defer
 
---[=[
-	Creates an immediately resolved Promise with the given value.
-
-	```lua
-	-- Example using Promise.resolve to deliver cached values:
-	function getSomething(name)
-		if cache[name] then
-			return Promise.resolve(cache[name])
-		else
-			return Promise.new(function(resolve, reject)
-				local thing = getTheThing()
-				cache[name] = thing
-
-				resolve(thing)
-			end)
-		end
-	end
-	```
-
-	@param ... any
-	@return Promise<...any>
-]=]
 function Promise.resolve(...)
 	local length, values = pack(...)
 	return Promise._new(debug.traceback(nil, 2), function(resolve)
@@ -422,16 +344,6 @@ function Promise.resolve(...)
 	end)
 end
 
---[=[
-	Creates an immediately rejected Promise with the given value.
-
-	:::caution
-	Something needs to consume this rejection (i.e. `:catch()` it), otherwise it will emit an unhandled Promise rejection warning on the next frame. Thus, you should not create and store rejected Promises for later use. Only create them on-demand as needed.
-	:::
-
-	@param ... any
-	@return Promise<...any>
-]=]
 function Promise.reject(...)
 	local length, values = pack(...)
 	return Promise._new(debug.traceback(nil, 2), function(_, reject)
@@ -1023,24 +935,6 @@ function Promise.promisify(callback)
 	end
 end
 
---[=[
-	Returns a Promise that resolves after `seconds` seconds have passed. The Promise resolves with the actual amount of time that was waited.
-
-	This function is **not** a wrapper around `wait`. `Promise.delay` uses a custom scheduler which provides more accurate timing. As an optimization, cancelling this Promise instantly removes the task from the scheduler.
-
-	:::warning
-	Passing `NaN`, infinity, or a number less than 1/60 is equivalent to passing 1/60.
-	:::
-
-	```lua
-		Promise.delay(5):andThenCall(print, "This prints after 5 seconds")
-	```
-
-	@function delay
-	@within Promise
-	@param seconds number
-	@return Promise<number>
-]=]
 do
 	-- uses a sorted doubly linked list (queue) to achieve O(1) remove operations and O(n) for insert
 
