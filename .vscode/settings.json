@@ -1,0 +1,6 @@
+{
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+    "discord.detailsEditing": "Editing {file_name}",
+    "discord.lowerDetailsEditing": "Workspace: {workspace} - {dir_name}"
+}
