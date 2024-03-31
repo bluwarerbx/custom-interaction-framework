@@ -27,7 +27,7 @@ For more help, check out [the Rojo documentation](https://rojo.space/docs)
 
 ## Documentation
 
-- WORK IN PROGRESS
+[Custom Interaction Framework](https://bluwarerbx.github.io/custom-interaction-framework/)
 
 ## Installation
 
