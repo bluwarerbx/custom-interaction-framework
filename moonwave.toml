@@ -1,7 +1,0 @@
-title = "Custom Interaction Framework"  # From Git
-gitRepoUrl = "https://github.com/bluwarerbx/custom-interaction-framework"
-
-gitSourceBranch = "main"
-
-# From Git
-baseUrl = "/custom-interaction-framework/"
