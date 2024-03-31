@@ -20,7 +20,7 @@ For more help, check out [the Rojo documentation](https://rojo.space/docs)
 
 ## Features
 
-- Automatically stacks your proximity prompts if you are creating multiple Interactions under one component (Part which is tagged to its component) (You can have multiple proximityprompts under different keybind
+- Automatically stacks your proximity prompts if you are creating multiple Interactions under one component (Part which is tagged to its component) (You can have multiple proximityprompts under different keybind)
 - Proper Modularization and its typechecked :heart_eyes_cat:﻿ 
 - Easily customisable, to create a interaction, all you have to do is create a Tag using the Tag Editor, Tag the parts you want the interaction to be under and replicate the Tag Name on the folder in the ReplicatedStorage Folder and state its function with specifying the 'CreatePrompt' Constructor with its prompt details and a prompt will be created, prompt can be prompted on the server or the client
 - Has its own functions to customise prompts, properties of the proximityprompt can be customised
