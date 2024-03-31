@@ -4,4 +4,4 @@ gitRepoUrl = "https://github.com/bluwarerbx/custom-interaction-framework"
 gitSourceBranch = "mainmaster"
 
 # From Git
-baseUrl = "/D:/Programming/biz/Luau/Custom%20Interaction%20Framework/build/index.html/"
+baseUrl = "/custom-interaction-framework/"
