@@ -34,4 +34,3 @@ For more help, check out [the Rojo documentation](https://rojo.space/docs)
 ## Installation
 
 [Roblox Place](https://www.roblox.com/games/16957625098/Custom-Interaction-Framework)
-[Github Release](https://github.com/bluwarerbx/custom-interaction-framework/releases/tag/Release)
